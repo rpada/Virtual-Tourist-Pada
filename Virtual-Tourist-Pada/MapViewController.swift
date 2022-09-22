@@ -19,53 +19,92 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
     var pins: [Pin] = []
     var dataController: DataController!
     
-//https://stackoverflow.com/questions/40844336/create-long-press-gesture-recognizer-with-annotation-pin
+    //https://stackoverflow.com/questions/40844336/create-long-press-gesture-recognizer-with-annotation-pin
     override func viewDidLoad() {
         super.viewDidLoad()
         // https://knowledge.udacity.com/questions/249077
         let tapGesture = UILongPressGestureRecognizer(target: self, action:#selector(MapViewController.handleTap(_:)))
-           tapGesture.delegate = self
-            MapView.addGestureRecognizer(tapGesture)
-            MapView.delegate = self // make pins appear as stylized
-        // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/49036d1d-4810-4bec-b973-abe80a5dee6b
-        let fetchRequest:NSFetchRequest<Pin> = Pin.fetchRequest()
-        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
-        fetchRequest.sortDescriptors = [sortDescriptor]
-        if let result = try? dataController.viewContext.fetch(fetchRequest){
-            pins = result
-            // MapView.reloadData()
+        tapGesture.delegate = self
+        MapView.addGestureRecognizer(tapGesture)
+        MapView.delegate = self // make pins appear as stylized
+        loadPins()
+    }
+    
+    // from https://stackoverflow.com/questions/24195310/how-to-add-an-action-to-a-uialertview-button-using-swift-ios
+    
+    // stack overflow said to use DispatchQueue: https://stackoverflow.com/questions/58087536/modifications-to-the-layout-engine-must-not-be-performed-from-a-background-thr
+        
+        
+    func showAlertAction(title: String, message: String){
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: {(action:UIAlertAction!) in
+                print("Action")
+            }))
+            self.present(alert, animated: true, completion: nil)
         }
     }
-// https://stackoverflow.com/questions/40844336/create-long-press-gesture-recognizer-with-annotation-pin
+    // https://stackoverflow.com/questions/40844336/create-long-press-gesture-recognizer-with-annotation-pin
     @objc func handleTap(_ sender: UIGestureRecognizer)
     {
         if sender.state == UIGestureRecognizer.State.ended {
-
+            
             let touchPoint = sender.location(in: MapView)
             let touchCoordinate = MapView.convert(touchPoint, toCoordinateFrom: MapView)
             let annotation = MKPointAnnotation()
+            // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/a65a1e8d-4237-460a-a953-9d0ab8575dd3
+            let pin = Pin(context: dataController.viewContext)
+            pin.latitude = touchCoordinate.latitude
+            pin.longitude = touchCoordinate.longitude
+            try? dataController.viewContext.save()
             annotation.coordinate = touchCoordinate
-            annotation.title = "Event place"
-            print(touchCoordinate.latitude)
-            print(touchCoordinate.longitude)
-            MapView.removeAnnotations(MapView.annotations)
+            annotation.title = "New pin"
             MapView.addAnnotation(annotation) //drops the pin
-      }
-    }
-  // make the pins more stylized
-    // from On the Map project
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-        guard annotation is MKPointAnnotation else { print("no mkpointannotaions"); return nil }
-        let reuseId = "pin"
-        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
-        if pinView == nil {
-            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            pinView!.pinTintColor = .red
+            pins.append(pin)
         }
-        else {
-            pinView!.annotation = annotation
-        }
-        return pinView
     }
-    
-}
+    func loadPins() {
+    // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/49036d1d-4810-4bec-b973-abe80a5dee6b
+        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        if let pins = try? dataController.viewContext.fetch(fetchRequest){
+            // iteration https://knowledge.udacity.com/questions/346334
+            for persistedPins in pins {
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = CLLocationCoordinate2D(latitude:persistedPins.latitude, longitude: persistedPins.longitude)
+                self.MapView.addAnnotation(annotation)
+            }
+        } else {
+            self.showAlertAction(title: "Error!", message: "Could not load pins. Please try again.")
+        }
+        }
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        let annotation = view.annotation
+        // https://classroom.udacity.com/nanodegrees/nd003/parts/4674db75-a1fd-4134-aedf-387f74357fe0/modules/480a4cc0-6e64-4979-b1e6-15ce588850ee/lessons/751f4590-576f-4091-aa8b-3b0edd2cd3e8/concepts/d4f21dca-dd2e-4a3b-b0c1-5c55db1b0ca5
+        let photosController = storyboard?.instantiateViewController(withIdentifier: "PhotosViewController") as! PhotosViewController
+        //https://stackoverflow.com/questions/7213346/get-latitude-and-longitude-from-annotation-view
+        photosController.selectedPin = annotation?.coordinate
+        photosController.dataController = dataController
+        // https://knowledge.udacity.com/questions/209471
+        mapView.deselectAnnotation(view.annotation, animated:true)
+        self.navigationController?.pushViewController(photosController, animated: true)
+    }
+        
+        // make the pins more stylized
+        // from On the Map project
+        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            guard annotation is MKPointAnnotation else { print("no mkpointannotaions"); return nil }
+            let reuseId = "pin"
+            var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
+            if pinView == nil {
+                pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+                pinView!.pinTintColor = .red
+            }
+            else {
+                pinView!.annotation = annotation
+            }
+            return pinView
+        }
+    }
+

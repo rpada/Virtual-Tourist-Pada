@@ -9,20 +9,22 @@
 /* Begin PBXBuildFile section */
 		A5C6A87428D9422400A0976C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C6A87328D9422400A0976C /* AppDelegate.swift */; };
 		A5C6A87628D9422400A0976C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C6A87528D9422400A0976C /* SceneDelegate.swift */; };
-		A5C6A87828D9422400A0976C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C6A87728D9422400A0976C /* ViewController.swift */; };
 		A5C6A87B28D9422400A0976C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5C6A87928D9422400A0976C /* Main.storyboard */; };
 		A5C6A87D28D9422600A0976C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A5C6A87C28D9422600A0976C /* Assets.xcassets */; };
 		A5C6A88028D9422600A0976C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A5C6A87E28D9422600A0976C /* LaunchScreen.storyboard */; };
 		A5C6A88828D9451B00A0976C /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C6A88728D9451B00A0976C /* MapViewController.swift */; };
 		A5C6A88D28D94C9400A0976C /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A5C6A88B28D94C9400A0976C /* DataModel.xcdatamodeld */; };
 		A5C6A88F28D9654E00A0976C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C6A88E28D9654E00A0976C /* DataController.swift */; };
+		A5C6A89128DA6DA200A0976C /* PhotosViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C6A89028DA6DA200A0976C /* PhotosViewController.swift */; };
+		A5C6A89328DBB17300A0976C /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C6A89228DBB17300A0976C /* Client.swift */; };
+		A5C6A89728DBB9FB00A0976C /* ImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C6A89628DBB9FB00A0976C /* ImageCell.swift */; };
+		A5C6A89928DBCEAF00A0976C /* Struct.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5C6A89828DBCEAF00A0976C /* Struct.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A5C6A87028D9422400A0976C /* Virtual-Tourist-Pada.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virtual-Tourist-Pada.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A5C6A87328D9422400A0976C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A5C6A87528D9422400A0976C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		A5C6A87728D9422400A0976C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A5C6A87A28D9422400A0976C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A5C6A87C28D9422600A0976C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A5C6A87F28D9422600A0976C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -30,6 +32,10 @@
 		A5C6A88728D9451B00A0976C /* MapViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 		A5C6A88C28D94C9400A0976C /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
 		A5C6A88E28D9654E00A0976C /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
+		A5C6A89028DA6DA200A0976C /* PhotosViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosViewController.swift; sourceTree = "<group>"; };
+		A5C6A89228DBB17300A0976C /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		A5C6A89628DBB9FB00A0976C /* ImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCell.swift; sourceTree = "<group>"; };
+		A5C6A89828DBCEAF00A0976C /* Struct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Struct.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,9 +71,12 @@
 				A5C6A87328D9422400A0976C /* AppDelegate.swift */,
 				A5C6A88E28D9654E00A0976C /* DataController.swift */,
 				A5C6A87528D9422400A0976C /* SceneDelegate.swift */,
-				A5C6A87728D9422400A0976C /* ViewController.swift */,
 				A5C6A87928D9422400A0976C /* Main.storyboard */,
 				A5C6A88728D9451B00A0976C /* MapViewController.swift */,
+				A5C6A89028DA6DA200A0976C /* PhotosViewController.swift */,
+				A5C6A89628DBB9FB00A0976C /* ImageCell.swift */,
+				A5C6A89228DBB17300A0976C /* Client.swift */,
+				A5C6A89828DBCEAF00A0976C /* Struct.swift */,
 				A5C6A88B28D94C9400A0976C /* DataModel.xcdatamodeld */,
 				A5C6A87C28D9422600A0976C /* Assets.xcassets */,
 				A5C6A87E28D9422600A0976C /* LaunchScreen.storyboard */,
@@ -147,10 +156,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5C6A87828D9422400A0976C /* ViewController.swift in Sources */,
 				A5C6A88F28D9654E00A0976C /* DataController.swift in Sources */,
+				A5C6A89728DBB9FB00A0976C /* ImageCell.swift in Sources */,
+				A5C6A89328DBB17300A0976C /* Client.swift in Sources */,
+				A5C6A89928DBCEAF00A0976C /* Struct.swift in Sources */,
 				A5C6A87428D9422400A0976C /* AppDelegate.swift in Sources */,
 				A5C6A88D28D94C9400A0976C /* DataModel.xcdatamodeld in Sources */,
+				A5C6A89128DA6DA200A0976C /* PhotosViewController.swift in Sources */,
 				A5C6A87628D9422400A0976C /* SceneDelegate.swift in Sources */,
 				A5C6A88828D9451B00A0976C /* MapViewController.swift in Sources */,
 			);

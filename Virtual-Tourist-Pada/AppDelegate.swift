@@ -19,12 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         // from https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/ec849d7a-30e6-4ebd-9b07-910521cbedcc
-        dataController.load()
+      //  dataController.load()
         // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/aec3cd9c-cf56-453d-b066-93738a9041db
-        let navigationController = window?.rootViewController! as! UINavigationController
-        let mapViewController = navigationController.topViewController as! MapViewController
-        mapViewController.dataController = dataController
-        return true
+//        let navigationController = window?.rootViewController! as! UINavigationController
+//        let mapViewController = navigationController.topViewController as! MapViewController
+//        mapViewController.dataController = dataController
+       return true
     }
 
     // MARK: UISceneSession Lifecycle
