@@ -12,13 +12,14 @@ class PhotoSearch {
     enum Endpoints {
         static let base = "https://api.flickr.com/services/rest"
         static let photoSearch = "?method=flickr.photos.search"
-        static let apiKey = "49a1e77aa399c3a23a9fca742e91480d"
+        static let apiKey = "5d2fa7c557092af5a187b3600ba71fe7"
+        static let secret = "7b69f42ee21797fb"
         
-        case getPhotos(Double, Double, Int)
+        case grabPhotos(Double, Double, Int)
         
         var stringValue: String {
             switch self {
-            case .getPhotos(let lat, let lon, let page):
+            case .grabPhotos(let lat, let lon, let page):
                 return Endpoints.base + Endpoints.photoSearch + "&extras=url_sq" + "&api_key=\(Endpoints.apiKey)" + "&lat=\(lat)" + "&lon=\(lon)" + "&per_page=30" + "&page=\(page)" + "&format=json&nojsoncallback=1"
             }
         }
@@ -31,7 +32,7 @@ class PhotoSearch {
     // MARK: Search for photos and parse results
     
     class func grabPhotos(lat: Double, lon: Double, page: Int, completion: @escaping (Photos?, Error?) -> Void) {
-        var request = URLRequest(url: Endpoints.getPhotos(lat, lon, page).url)
+        var request = URLRequest(url: Endpoints.grabPhotos(lat, lon, page).url)
         print(request)
         request.httpMethod = "GET"
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
