@@ -81,10 +81,6 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
                 } else {
                     // test
                     self.showAlertAction(title: "Success!", message: "Photos will be retrieved")
-                    self.photos = (photos?.photo)!
-                    let randomPage = Int.random(in: 1...photos!.pages)
-                    self.page = randomPage
-                    print(self.page)
                 }
             } else {
             self.showAlertAction(title: "Error", message: "Could not retrieve photos")
