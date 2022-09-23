@@ -36,7 +36,6 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
         self.Map.setRegion(region, animated: false)
         // not working
         Map.delegate = self // make pins appear as stylized
-        
         loadPhotos()
     }
     
@@ -73,19 +72,15 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
         }
         return pinView
     }
-    func loadPhotos() {
-        PhotoSearch.grabPhotos(lat: selectedPin?.latitude ?? 0.0, lon: selectedPin?.longitude ?? 0.0, page: page, completion: { (photos, error) in
-            if (photos != nil) {
-                if photos?.pages == 0 {
-                self.showAlertAction(title: "Sorry!", message: "Could not find any photos for this location.")
+    // // from https://classroom.udacity.com/nanodegrees/nd003/parts/2b0b0f37-f10b-41dc-abb4-a346f293027a/modules/4b26ca51-f2e8-45a3-92df-a1797f597a19/lessons/3283ae8e-5dd5-483b-9c49-2faac7c53276/concepts/126b0978-f775-480a-bac0-68a1396aa81a
+    // similar logic to Udacity's API- call it from the Client, assign the correct variables, handle errors 
+     func loadPhotos() {
+         PhotoSearch.searchPhotos(lat:selectedPin?.latitude ?? 0.0, lon:selectedPin?.latitude ?? 0.0, page: page) { response, error in
+            if let response = response {
+                print("success")
                 } else {
-                    // test
-                    self.showAlertAction(title: "Success!", message: "Photos will be retrieved")
-                }
-            } else {
-            self.showAlertAction(title: "Error", message: "Could not retrieve photos")
+            self.showAlertAction(title: "Error", message: "Could not load photos")
             }
-        })
+        }
     }
-  
 }

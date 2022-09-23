@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct PhotoSearchResponse: Codable {
+struct ResponsefromFlickr: Codable {
     let photos: Photos
     let stat: String
 }
@@ -15,7 +15,7 @@ struct Photos: Codable {
     let page: Int
     let pages: Int
     let perPage: Int
-    let total: String
+    let total: Int
     let photo: [Photo]
     
     enum CodingKeys: String, CodingKey {
