@@ -15,8 +15,8 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var collectionPhotos: UICollectionView!
     @IBOutlet weak var Map: MKMapView!
     // https://developer.apple.com/forums/thread/112480
-    var selectedPin: CLLocationCoordinate2D?
-    var pins: [Pin] = []
+   var selectedPin: CLLocationCoordinate2D?
+  //  var pins: [Pin] = []
     var dataController: DataController!
     var page: Int = 0
     var cellsPerRow = 0
@@ -26,7 +26,9 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.collectionPhotos.delegate
         let annotation = MKPointAnnotation()
+        print(pin)
         // https://stackoverflow.com/questions/7213346/get-latitude-and-longitude-from-annotation-view
         annotation.coordinate.latitude = selectedPin?.latitude ?? 0.0
         annotation.coordinate.longitude = selectedPin?.longitude ?? 0.0
@@ -36,7 +38,6 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
         self.Map.setRegion(region, animated: false)
         // not working
         Map.delegate = self // make pins appear as stylized
-        loadPhotos()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -75,12 +76,13 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
     // // from https://classroom.udacity.com/nanodegrees/nd003/parts/2b0b0f37-f10b-41dc-abb4-a346f293027a/modules/4b26ca51-f2e8-45a3-92df-a1797f597a19/lessons/3283ae8e-5dd5-483b-9c49-2faac7c53276/concepts/126b0978-f775-480a-bac0-68a1396aa81a
     // similar logic to Udacity's API- call it from the Client, assign the correct variables, handle errors 
      func loadPhotos() {
-         PhotoSearch.searchPhotos(lat:selectedPin?.latitude ?? 0.0, lon:selectedPin?.latitude ?? 0.0, page: page) { response, error in
+         PhotoSearch.searchPhotos(lat: selectedPin?.latitude ?? 0.0, lon: selectedPin?.longitude ?? 0.0, page: page) { response, error in
             if let response = response {
-                print("success")
+              print(response)
                 } else {
             self.showAlertAction(title: "Error", message: "Could not load photos")
             }
         }
     }
+   
 }

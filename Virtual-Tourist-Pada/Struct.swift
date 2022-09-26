@@ -37,7 +37,7 @@ struct Photo: Codable {
     let isPublic: Int
     let isFriend: Int
     let isFamily: Int
-    let urlSq: String
+    let urlm: String
     
     enum CodingKeys: String, CodingKey {
         case id,
@@ -49,7 +49,7 @@ struct Photo: Codable {
         case isPublic = "ispublic"
         case isFriend = "isfriend"
         case isFamily = "isfamily"
-        case urlSq = "url_sq"
+        case urlm = "url_m"
     }
 }
 

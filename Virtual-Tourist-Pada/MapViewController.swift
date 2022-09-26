@@ -33,8 +33,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
     // from https://stackoverflow.com/questions/24195310/how-to-add-an-action-to-a-uialertview-button-using-swift-ios
     
     // stack overflow said to use DispatchQueue: https://stackoverflow.com/questions/58087536/modifications-to-the-layout-engine-must-not-be-performed-from-a-background-thr
-        
-        
+    
+    
     func showAlertAction(title: String, message: String){
         DispatchQueue.main.async {
             let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
@@ -64,7 +64,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         }
     }
     func loadPins() {
-    // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/49036d1d-4810-4bec-b973-abe80a5dee6b
+        // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/49036d1d-4810-4bec-b973-abe80a5dee6b
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
         let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
@@ -72,24 +72,27 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
             // iteration https://knowledge.udacity.com/questions/346334
             for persistedPins in pins {
                 let annotation = MKPointAnnotation()
-                annotation.coordinate = CLLocationCoordinate2D(latitude:persistedPins.latitude, longitude: persistedPins.longitude)
+                annotation.coordinate = CLLocationCoordinate2D(latitude: persistedPins.latitude, longitude: persistedPins.longitude)
                 self.MapView.addAnnotation(annotation)
             }
         } else {
             self.showAlertAction(title: "Error!", message: "Could not load pins. Please try again.")
         }
-        }
+    }
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         let annotation = view.annotation
+        // https://knowledge.udacity.com/questions/209471
         // https://classroom.udacity.com/nanodegrees/nd003/parts/4674db75-a1fd-4134-aedf-387f74357fe0/modules/480a4cc0-6e64-4979-b1e6-15ce588850ee/lessons/751f4590-576f-4091-aa8b-3b0edd2cd3e8/concepts/d4f21dca-dd2e-4a3b-b0c1-5c55db1b0ca5
         let photosController = storyboard?.instantiateViewController(withIdentifier: "PhotosViewController") as! PhotosViewController
         //https://stackoverflow.com/questions/7213346/get-latitude-and-longitude-from-annotation-view
-        photosController.selectedPin = annotation?.coordinate
-        photosController.dataController = dataController
-        // https://knowledge.udacity.com/questions/209471
-        mapView.deselectAnnotation(view.annotation, animated:true)
-        self.navigationController?.pushViewController(photosController, animated: true)
-    }
+            photosController.selectedPin = annotation?.coordinate
+            for persistedPins in pins {
+                photosController.pin = persistedPins
+            }
+            photosController.dataController = dataController
+            mapView.deselectAnnotation(view.annotation, animated:true)
+            self.navigationController?.pushViewController(photosController, animated: true)
+        }
         
         // make the pins more stylized
         // from On the Map project
@@ -107,4 +110,5 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
             return pinView
         }
     }
+    
 
