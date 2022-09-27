@@ -4,7 +4,6 @@
 //
 //  Created by Brenna Pada on 9/20/22.
 //
-
 import Foundation
 import UIKit
 import MapKit
@@ -15,8 +14,9 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var collectionPhotos: UICollectionView!
     @IBOutlet weak var Map: MKMapView!
     // https://developer.apple.com/forums/thread/112480
-   var selectedPin: CLLocationCoordinate2D?
-  //  var pins: [Pin] = []
+    fileprivate let cellSize = UIScreen.main.bounds.width / 2
+    var selectedPin: CLLocationCoordinate2D?
+    //  var pins: [Pin] = []
     var dataController: DataController!
     var page: Int = 0
     var cellsPerRow = 0
@@ -38,6 +38,8 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
         self.Map.setRegion(region, animated: false)
         // not working
         Map.delegate = self // make pins appear as stylized
+        loadPhotos()
+        fetchPhotos()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -48,8 +50,8 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
     // from https://stackoverflow.com/questions/24195310/how-to-add-an-action-to-a-uialertview-button-using-swift-ios
     
     // stack overflow said to use DispatchQueue: https://stackoverflow.com/questions/58087536/modifications-to-the-layout-engine-must-not-be-performed-from-a-background-thr
-        
-        
+    
+    
     func showAlertAction(title: String, message: String){
         DispatchQueue.main.async {
             let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
@@ -59,7 +61,7 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
             self.present(alert, animated: true, completion: nil)
         }
     }
-  
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard annotation is MKPointAnnotation else { print("no mkpointannotaions"); return nil }
         let reuseId = "pin"
@@ -74,15 +76,35 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
         return pinView
     }
     // // from https://classroom.udacity.com/nanodegrees/nd003/parts/2b0b0f37-f10b-41dc-abb4-a346f293027a/modules/4b26ca51-f2e8-45a3-92df-a1797f597a19/lessons/3283ae8e-5dd5-483b-9c49-2faac7c53276/concepts/126b0978-f775-480a-bac0-68a1396aa81a
-    // similar logic to Udacity's API- call it from the Client, assign the correct variables, handle errors 
-     func loadPhotos() {
-         PhotoSearch.searchPhotos(lat: selectedPin?.latitude ?? 0.0, lon: selectedPin?.longitude ?? 0.0, page: page) { response, error in
+    // similar logic to Udacity's API- call it from the Client, assign the correct variables, handle errors
+    func loadPhotos() {
+        //  showActivityIndicator()
+        PhotoSearch.searchPhotos(lat: selectedPin?.latitude ?? 0.0, lon: selectedPin?.longitude ?? 0.0, page: page) { response, error in
             if let response = response {
-              print(response)
-                } else {
-            self.showAlertAction(title: "Error", message: "Could not load photos")
+                let downloadedURLs = response.photos.photo
+                let randomPage = Int.random(in: 1...response.photos.pages)
+                self.page = randomPage
+                self.collectionPhotos.reloadData()
+            } else {
+                print("Photos could not load")
             }
         }
     }
-   
+    
+    // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/49036d1d-4810-4bec-b973-abe80a5dee6b
+    func fetchPhotos(){
+        let fetchRequest: NSFetchRequest<APIPhoto> = APIPhoto.fetchRequest()
+        let predicate = NSPredicate(format: "pin == %@", pin)
+        fetchRequest.predicate = predicate
+        do {
+            let result = try dataController.viewContext.fetch(fetchRequest)
+            APIPhotoVar = result
+            for persistedPhotos in photos {
+                photos.append(persistedPhotos)
+                collectionPhotos.reloadData()
+            }
+        } catch {
+            showAlertAction(title: "Error", message: "Could not load photos")
+        }
+    }
 }

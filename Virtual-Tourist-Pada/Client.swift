@@ -71,6 +71,7 @@ class PhotoSearch {
             }
         }
     }
+
     class func downloadPhoto(url: URL, completion: @escaping (Data?, Error?) -> Void) {
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data else {
