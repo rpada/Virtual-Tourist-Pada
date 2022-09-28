@@ -81,10 +81,24 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
         //  showActivityIndicator()
         PhotoSearch.searchPhotos(lat: selectedPin?.latitude ?? 0.0, lon: selectedPin?.longitude ?? 0.0, page: page) { response, error in
             if let response = response {
-                print(response)
+                print(response, "SUCCESS")
                 let downloadedURLs = response.photos.photo
 //                let randomPage = Int.random(in: 1...response.photos.pages)
 //                self.page = randomPage
+                for photo in self.photos {
+                    let APIPhoto = APIPhoto(context: self.dataController.viewContext)
+                    APIPhoto.imageUrl = photo.urlm
+                    APIPhoto.pin = self.pin
+                    self.APIPhotoVar.append(APIPhoto)
+                    do {
+                        try self.dataController.viewContext.save()
+                    } catch {
+                        print("Unable to get image url")
+                    }
+                }
+                DispatchQueue.main.async {
+                    self.collectionPhotos.reloadData()
+                }
                 self.collectionPhotos.reloadData()
             } else {
                 print("Photos could not load")
@@ -143,7 +157,7 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
         return APIPhotoVar.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    private func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCellView", for: indexPath) as! ImageCellView
         let cellImage = APIPhotoVar[indexPath.row]
         
