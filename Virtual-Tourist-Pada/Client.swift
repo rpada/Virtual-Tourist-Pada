@@ -37,9 +37,9 @@ class PhotoSearch {
                 }
                 return
             }
-            //                      //https://knowledge.udacity.com/questions/899643
-            //                      let range = 5..<data.count
-            //                      let newData = data.subdata(in: range)
+            //https://knowledge.udacity.com/questions/899643
+            // let range = 5..<data.count
+            // let newData = data.subdata(in: range)
             // doesn't work when I do this. I'm guessing for this API this step is not neccessary
             let decoder = JSONDecoder()
             do {
@@ -62,9 +62,7 @@ class PhotoSearch {
             if let response = response {
                 DispatchQueue.main.async {
                     completion(response, nil)
-                    print(response)
-                    print("success")
-                }
+                    }
             } else {
                 completion(nil, error)
                 print("Error!")
@@ -80,7 +78,8 @@ class PhotoSearch {
                 return
             }
             completion(data, nil)
+            print(data)
         }
         task.resume()
-    }    
+    }
 }

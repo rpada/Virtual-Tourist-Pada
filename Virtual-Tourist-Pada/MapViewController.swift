@@ -86,9 +86,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         let photosController = storyboard?.instantiateViewController(withIdentifier: "PhotosViewController") as! PhotosViewController
         //https://stackoverflow.com/questions/7213346/get-latitude-and-longitude-from-annotation-view
             photosController.selectedPin = annotation?.coordinate
-            for persistedPins in pins {
-                    photosController.pin = persistedPins
-            }
+        for persistedPins in pins {
+                photosController.pin = persistedPins
+        }
             photosController.dataController = dataController
             mapView.deselectAnnotation(view.annotation, animated:true)
             self.navigationController?.pushViewController(photosController, animated: true)

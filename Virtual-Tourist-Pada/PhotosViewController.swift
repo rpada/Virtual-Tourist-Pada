@@ -9,7 +9,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class PhotosViewController: UIViewController, MKMapViewDelegate {
+class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionViewDelegate {
     
     @IBOutlet weak var collectionPhotos: UICollectionView!
     @IBOutlet weak var Map: MKMapView!
@@ -26,7 +26,7 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.collectionPhotos.delegate
+        self.collectionPhotos.delegate = self
         let annotation = MKPointAnnotation()
         print(pin)
         // https://stackoverflow.com/questions/7213346/get-latitude-and-longitude-from-annotation-view
@@ -39,7 +39,7 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
         // not working
         Map.delegate = self // make pins appear as stylized
         loadPhotos()
-        fetchPhotos()
+        loadfetchedPhotos()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -81,9 +81,10 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
         //  showActivityIndicator()
         PhotoSearch.searchPhotos(lat: selectedPin?.latitude ?? 0.0, lon: selectedPin?.longitude ?? 0.0, page: page) { response, error in
             if let response = response {
+                print(response)
                 let downloadedURLs = response.photos.photo
-                let randomPage = Int.random(in: 1...response.photos.pages)
-                self.page = randomPage
+//                let randomPage = Int.random(in: 1...response.photos.pages)
+//                self.page = randomPage
                 self.collectionPhotos.reloadData()
             } else {
                 print("Photos could not load")
@@ -91,14 +92,41 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    func downloadPhotos(url: URL, _ indexPath: IndexPath, _ cell: ImageCellView){
+        let cellImage = APIPhotoVar[indexPath.row]
+        PhotoSearch.downloadPhoto(url: url) { (data, error) in
+            if (data != nil) {
+                DispatchQueue.main.async {
+                    cellImage.image = data
+                    cellImage.pin = self.pin
+                    do {
+                        try self.dataController.viewContext.save()
+                    } catch {
+                        print("There was an error saving photos")
+                    }
+                    DispatchQueue.main.async {
+                        cell.PhotoCell?.image = UIImage(data: data!)
+                    }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.showAlertAction(title: "There was an error downloading photos", message: "Sorry")
+                }
+                
+            }
+            DispatchQueue.main.async {
+                print("Photos loaded")
+            }
+        }
+    }
     // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/49036d1d-4810-4bec-b973-abe80a5dee6b
-    func fetchPhotos(){
+    func loadfetchedPhotos(){
         let fetchRequest: NSFetchRequest<APIPhoto> = APIPhoto.fetchRequest()
         let predicate = NSPredicate(format: "pin == %@", pin)
         fetchRequest.predicate = predicate
         do {
-            let result = try dataController.viewContext.fetch(fetchRequest)
-            APIPhotoVar = result
+            let fetchphotos = try dataController.viewContext.fetch(fetchRequest)
+            APIPhotoVar = fetchphotos
             for persistedPhotos in photos {
                 photos.append(persistedPhotos)
                 collectionPhotos.reloadData()
@@ -106,5 +134,37 @@ class PhotosViewController: UIViewController, MKMapViewDelegate {
         } catch {
             showAlertAction(title: "Error", message: "Could not load photos")
         }
+    }
+
+    
+    // MARK: Collection View Data Source
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return APIPhotoVar.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ImageCellView", for: indexPath) as! ImageCellView
+        let cellImage = APIPhotoVar[indexPath.row]
+        
+        if cellImage.image != nil {
+            cell.PhotoCell.image = UIImage(data: cellImage.image!)
+        } else {
+            if cellImage.imageUrl != nil {
+                let url = URL(string: cellImage.imageUrl ?? "")
+                downloadPhotos(url: url!, indexPath, cell)
+            }
+        }
+        return cell
+    }
+    
+    
+    // MARK: Collection View Layout
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+         let flowLayout = collectionViewLayout as! UICollectionViewFlowLayout
+         let totalSpace = flowLayout.sectionInset.left + flowLayout.sectionInset.right + (flowLayout.minimumInteritemSpacing * CGFloat(cellsPerRow - 1))
+         let size = Int((collectionPhotos.bounds.width - totalSpace) / CGFloat(cellsPerRow))
+         return CGSize(width: size, height: size)
     }
 }
