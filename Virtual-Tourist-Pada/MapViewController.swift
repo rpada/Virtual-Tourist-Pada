@@ -65,8 +65,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
     func loadPins(){
         // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/49036d1d-4810-4bec-b973-abe80a5dee6b
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
-//        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
-//        fetchRequest.sortDescriptors = [sortDescriptor]
+        let sortDescriptor = NSSortDescriptor(key: "latitude", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
         if let fetchpins = try? dataController.viewContext.fetch(fetchRequest){
             pins = fetchpins
             // iteration https://knowledge.udacity.com/questions/346334

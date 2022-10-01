@@ -40,7 +40,7 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
         self.Map.setRegion(region, animated: false)
         // not working
         Map.delegate = self // make pins appear as stylized
-     //   APIPhotoVar = fetchFlickrPhotos()
+        APIPhotoVar = fetchFlickrPhotos()
         loadPhotos()
 
     }
@@ -110,25 +110,41 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
         collectionPhotos.reloadData()
     }
     
-    func downloadPhotos(url: URL, _ indexPath: IndexPath, _ cell: ImageCellView){
-        let cellImage = APIPhotoVar[indexPath.row]
-   
-        PhotoSearch.downloadPhoto(url: url) { (data, error) in
-            if let data = data{
-                cellImage.image = data
-                cellImage.pin = self.pin
-                do {
-                    try self.dataController.viewContext.save()
-                } catch {
-                    print("There was an error saving photos")
-                }
-                    DispatchQueue.main.async {
-                        cell.PhotoCell?.image = UIImage(data: data)
-                    }
+//    func downloadPhotos(url: URL, _ indexPath: IndexPath, _ cell: ImageCellView){
+//        let cellImage = APIPhotoVar[indexPath.row]
+//
+//        PhotoSearch.downloadPhoto(url: url) { (data, error) in
+//            if let data = data{
+//                cellImage.image = data
+//                cellImage.pin = self.pin
+//                do {
+//                    try self.dataController.viewContext.save()
+//                } catch {
+//                    print("There was an error saving photos")
+//                }
+//                    DispatchQueue.main.async {
+//                        cell.PhotoCell?.image = UIImage(data: data)
+//                    }
+//            } else {
+//                self.showAlertAction(title: "Error", message: "Could not download photo")
+//            }
+//        }
+//    }
+    
+    func downloadImage( imagePath:String, completionHandler: @escaping (_ imageData: Data?, _ errorString: String?) -> Void){
+        let session = URLSession.shared
+        let imgURL = NSURL(string: imagePath)
+        let request: NSURLRequest = NSURLRequest(url: imgURL! as URL)
+        
+        let task = session.dataTask(with: request as URLRequest) {data, response, downloadError in
+            
+            if downloadError != nil{
+                completionHandler(nil, "Could not download image \(imagePath)")
             } else {
-                self.showAlertAction(title: "Error", message: "Could not download photo")
+                completionHandler(data, nil)
             }
         }
+        task.resume()
     }
     // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/49036d1d-4810-4bec-b973-abe80a5dee6b
     // photo fetch request (PERSISTENCE)
@@ -160,12 +176,19 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
 
         let cellImage = APIPhotoVar[indexPath.row]
        
-        if let imageUrl = cellImage.imageUrl{
+        if cellImage.imageUrl != nil {
             let url = URL(string: cellImage.imageUrl ?? "")
-            downloadPhotos(url: url!, indexPath, cell)
-        }
-        if let image = cellImage.image{
-            cell.PhotoCell.image = UIImage(data: cellImage.image!)
+            downloadImage(imagePath: url!.absoluteString){(data, error) in
+                DispatchQueue.main.async{
+                    cell.PhotoCell.image = UIImage(data: data!)
+                }
+            }
+//        if let imageUrl = cellImage.imageUrl{
+//            let url = URL(string: cellImage.imageUrl ?? "")
+//            downloadPhotos(url: url!, indexPath, cell)
+//        }
+//        if let image = cellImage.image{
+//            cell.PhotoCell.image = UIImage(data: cellImage.image!)
         } else {
             cell.PhotoCell.image = UIImage(systemName: "photo")
         }
@@ -185,4 +208,3 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
         return 2
     }
 }
-
