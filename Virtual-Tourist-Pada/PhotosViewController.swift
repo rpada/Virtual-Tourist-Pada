@@ -41,8 +41,11 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
         // not working
         Map.delegate = self // make pins appear as stylized
         APIPhotoVar = fetchFlickrPhotos()
-        loadPhotos()
-
+        if APIPhotoVar.count > 0 {
+            fetchFlickrPhotos()
+        } else {
+            loadPhotos()
+        }
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -83,6 +86,7 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
                 if response.photos.pages == 0 {
                     self.showAlertAction(title: "Error", message: "No photos found for this location.")
                 } else {
+                    print("loading for the first time")
                     self.photos = (response.photos.photo)
                     let numberofPages = response.photos.pages
                     self.page = Int.random(in: 1...(numberofPages))
@@ -157,6 +161,7 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
               APIPhotoVar = result
               for newPhoto in APIPhotoVar {
                   APIPhotoVar.append(newPhoto)
+                  print("showing fetched photos")
                   collectionPhotos.reloadData()
               }
           } catch {
@@ -176,19 +181,13 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
 
         let cellImage = APIPhotoVar[indexPath.row]
        
-        if cellImage.imageUrl != nil {
+        if cellImage.imageUrl != nil{
             let url = URL(string: cellImage.imageUrl ?? "")
-            downloadImage(imagePath: url!.absoluteString){(data, error) in
+            downloadImage(imagePath: url!.absoluteString) {(data, error) in
                 DispatchQueue.main.async{
                     cell.PhotoCell.image = UIImage(data: data!)
                 }
             }
-//        if let imageUrl = cellImage.imageUrl{
-//            let url = URL(string: cellImage.imageUrl ?? "")
-//            downloadPhotos(url: url!, indexPath, cell)
-//        }
-//        if let image = cellImage.image{
-//            cell.PhotoCell.image = UIImage(data: cellImage.image!)
         } else {
             cell.PhotoCell.image = UIImage(systemName: "photo")
         }
