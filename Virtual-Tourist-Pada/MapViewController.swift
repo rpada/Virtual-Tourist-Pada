@@ -9,7 +9,7 @@ import UIKit
 import MapKit
 import CoreData
 
-class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate, UICollectionViewDelegate {
     
     @IBOutlet weak var MapView: MKMapView!
     
