@@ -10,7 +10,6 @@ import Foundation
 class PhotoSearch {
     enum Endpoints {
         static let base = "https://api.flickr.com/services/rest"
-        static let photoSearch = "?method=flickr.photos.search"
         static let apiKey = "5d2fa7c557092af5a187b3600ba71fe7"
         static let secret = "7b69f42ee21797fb"
         
@@ -19,7 +18,7 @@ class PhotoSearch {
         var stringValue: String {
             switch self {
             case .grabPhotos(let latitude, let longitude, let page):
-                return Endpoints.base + Endpoints.photoSearch + "&extras=url_m" + "&api_key=\(Endpoints.apiKey)" + "&accuracy=16" + "&lat=\(latitude)" +
+                return Endpoints.base + "?method=flickr.photos.search" + "&extras=url_m" + "&api_key=\(Endpoints.apiKey)" + "&accuracy=16" + "&lat=\(latitude)" +
                 "&lon=\(longitude)" + "&per_page=20" + "&page=\(Int.random(in: 1...10))" + "&format=json&nojsoncallback=1"
                 // https://knowledge.udacity.com/questions/672188
             }
