@@ -15,7 +15,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
     
     // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/aec3cd9c-cf56-453d-b066-93738a9041db
     
-    var pins: [Pin] = []
+   // var pins: [Pin] = []
     var dataController: DataController!
     
     //https://stackoverflow.com/questions/40844336/create-long-press-gesture-recognizer-with-annotation-pin
@@ -59,7 +59,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
             annotation.coordinate = touchCoordinate
             annotation.title = "New pin"
             MapView.addAnnotation(annotation) //drops the pin
-            pins.append(pin)
+            PinSingleton.sharedInstance().pins.append(pin)
         }
     }
     func loadPins(){
@@ -68,9 +68,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         let sortDescriptor = NSSortDescriptor(key: "latitude", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
         if let fetchpins = try? dataController.viewContext.fetch(fetchRequest){
-            pins = fetchpins
+            PinSingleton.sharedInstance().pins = fetchpins
             // iteration https://knowledge.udacity.com/questions/346334
-            for persistedPins in pins {
+            for persistedPins in PinSingleton.sharedInstance().pins {
                 let annotation = MKPointAnnotation()
                 annotation.coordinate = CLLocationCoordinate2D(latitude: persistedPins.latitude, longitude: persistedPins.longitude)
                 self.MapView.addAnnotation(annotation)
@@ -87,7 +87,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         //https://stackoverflow.com/questions/7213346/get-latitude-and-longitude-from-annotation-view
             photosController.selectedPin = annotation?.coordinate
         
-        for pin in pins {
+        for pin in PinSingleton.sharedInstance().pins {
             // from https://knowledge.udacity.com/questions/521585
             // I wasn't passing this correctly which caused the same photos to be showed for every single pin. 
             if pin.latitude == view.annotation?.coordinate.latitude && pin.longitude == view.annotation?.coordinate.longitude {
