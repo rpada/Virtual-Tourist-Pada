@@ -15,7 +15,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
     
     // https://classroom.udacity.com/nanodegrees/nd003/parts/9f3d04d4-d74a-4032-bf01-8887182fee62/modules/bbdd0d82-ac18-46b4-8bd4-246082887515/lessons/62c0b010-315c-4a1c-9bab-de477fff1aab/concepts/aec3cd9c-cf56-453d-b066-93738a9041db
     
-   // var pins: [Pin] = []
     var dataController: DataController!
     
     //https://stackoverflow.com/questions/40844336/create-long-press-gesture-recognizer-with-annotation-pin

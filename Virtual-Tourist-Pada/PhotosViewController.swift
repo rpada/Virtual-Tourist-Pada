@@ -152,16 +152,36 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
         
         let cellImage = APISingleton.sharedInstance().APIPhotoVar[indexPath.row]
         // with help from Udacity mentor: https://knowledge.udacity.com/questions/906577
-        if cellImage.coreURL != nil{
+        
+        // from Udacity project review https://review.udacity.com/#!/reviews/3735670
+        cell.PhotoCell.image = UIImage(systemName: "photo")
+        if cellImage.coreImage == nil{
             let url = URL(string: cellImage.coreURL ?? "")
             downloadImage(imagePath: url!.absoluteString) {(data, error) in
                 DispatchQueue.main.async{
                     cell.PhotoCell.image = UIImage(data: data!)
                 }
+                cellImage.coreImage = data
+                try! self.dataController.viewContext.save()
             }
         } else {
-            cell.PhotoCell.image = UIImage(systemName: "photo")
+            DispatchQueue.main.async{
+                cell.PhotoCell.image = UIImage(data: cellImage.coreImage!)
+            }
         }
+        
+//        if cellImage.coreURL != nil{
+//            let url = URL(string: cellImage.coreURL ?? "")
+//            downloadImage(imagePath: url!.absoluteString) {(data, error) in
+//                DispatchQueue.main.async{
+//                    cell.PhotoCell.image = UIImage(data: data!)
+//                }
+//                cellImage.coreImage = data
+//                try! self.dataController.viewContext.save()
+//            }
+//        } else {
+//            cell.PhotoCell.image = UIImage(systemName: "photo")
+//        }
         return cell
     }
     
