@@ -178,6 +178,8 @@ class PhotosViewController: UIViewController, MKMapViewDelegate, UICollectionVie
     func collectionView(_collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 2
     }
+    // https://developer.apple.com/documentation/uikit/uicollectionviewdelegate/1618032-collectionview
+    // https://stackoverflow.com/questions/51526703/didselectitemat-and-diddeselectitemat-from-uicollectionview
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
             self.dataController.viewContext.delete(APISingleton.sharedInstance().APIPhotoVar[indexPath.row])
             APISingleton.sharedInstance().APIPhotoVar.remove(at: indexPath.row)
