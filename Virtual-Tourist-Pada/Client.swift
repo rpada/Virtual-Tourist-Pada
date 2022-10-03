@@ -18,8 +18,10 @@ class PhotoSearch {
         
         var stringValue: String {
             switch self {
-            case .grabPhotos(let lat, let lon, let page):
-                return Endpoints.base + Endpoints.photoSearch + "&extras=url_m" + "&api_key=\(Endpoints.apiKey)" + "&accuracy=16" + "&lat=\(lat)" + "&lon=\(lon)" + "&per_page=20" + "&page=\(page)" + "&format=json&nojsoncallback=1"
+            case .grabPhotos(let latitude, let longitude, let page):
+                return Endpoints.base + Endpoints.photoSearch + "&extras=url_m" + "&api_key=\(Endpoints.apiKey)" + "&accuracy=16" + "&lat=\(latitude)" +
+                "&lon=\(longitude)" + "&per_page=20" + "&page=\(Int.random(in: 1...10))" + "&format=json&nojsoncallback=1"
+                // https://knowledge.udacity.com/questions/672188
             }
         }
         var url: URL {
@@ -59,8 +61,8 @@ class PhotoSearch {
     // https://classroom.udacity.com/nanodegrees/nd003/parts/2b0b0f37-f10b-41dc-abb4-a346f293027a/modules/4b26ca51-f2e8-45a3-92df-a1797f597a19/lessons/cd890113-636f-474a-8558-8b1a5e633c77/concepts/13238b1f-33b9-42a0-9597-6618a9168a33
     
     // https://classroom.udacity.com/nanodegrees/nd003/parts/2b0b0f37-f10b-41dc-abb4-a346f293027a/modules/4b26ca51-f2e8-45a3-92df-a1797f597a19/lessons/3283ae8e-5dd5-483b-9c49-2faac7c53276/concepts/6acdc289-de30-4f0e-b408-626668c70629
-    class func searchPhotos(lat: Double, lon: Double, page: Int, completion: @escaping (ResponsefromFlickr?, Error?) -> Void) {
-        taskForGETRequest(url: Endpoints.grabPhotos(lat, lon, page).url, responseType: ResponsefromFlickr.self) { response, error in
+    class func searchPhotos(latitude: Double, longitude: Double, page: Int, completion: @escaping (ResponsefromFlickr?, Error?) -> Void) {
+        taskForGETRequest(url: Endpoints.grabPhotos(latitude, longitude, page).url, responseType: ResponsefromFlickr.self) { response, error in
             if let response = response {
                 DispatchQueue.main.async {
                     completion(response, nil)
@@ -70,19 +72,5 @@ class PhotoSearch {
                 print("Error!")
             }
         }
-    }
-    // https://classroom.udacity.com/nanodegrees/nd003/parts/2b0b0f37-f10b-41dc-abb4-a346f293027a/modules/4b26ca51-f2e8-45a3-92df-a1797f597a19/lessons/cd890113-636f-474a-8558-8b1a5e633c77/concepts/13238b1f-33b9-42a0-9597-6618a9168a33
-    
-    // https://classroom.udacity.com/nanodegrees/nd003/parts/2b0b0f37-f10b-41dc-abb4-a346f293027a/modules/4b26ca51-f2e8-45a3-92df-a1797f597a19/lessons/3283ae8e-5dd5-483b-9c49-2faac7c53276/concepts/6acdc289-de30-4f0e-b408-626668c70629
-// adapted from https://www.hackingwithswift.com/example-code/networking/how-to-download-files-with-urlsession-and-downloadtask
-    class func downloadPhoto(url: URL, completion: @escaping (Data?, Error?) -> Void) {
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data else {
-                completion(nil, error)
-                return
-            }
-            completion(data, nil)
-        }
-        task.resume()
     }
 }

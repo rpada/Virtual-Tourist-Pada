@@ -86,8 +86,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         let photosController = storyboard?.instantiateViewController(withIdentifier: "PhotosViewController") as! PhotosViewController
         //https://stackoverflow.com/questions/7213346/get-latitude-and-longitude-from-annotation-view
             photosController.selectedPin = annotation?.coordinate
-        for persistedPins in pins {
-                photosController.pin = persistedPins
+        
+        for pin in pins {
+            // from https://knowledge.udacity.com/questions/521585
+            // I wasn't passing this correctly which caused the same photos to be showed for every single pin. 
+            if pin.latitude == view.annotation?.coordinate.latitude && pin.longitude == view.annotation?.coordinate.longitude {
+                photosController.pin = pin
+            }
         }
             photosController.dataController = dataController
             mapView.deselectAnnotation(view.annotation, animated:true)
